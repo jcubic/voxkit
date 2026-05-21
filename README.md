@@ -1,7 +1,11 @@
 # VoxKit
 
-[![PyPI version](https://img.shields.io/pypi/v/voxkit.svg)](https://pypi.org/project/voxkit/)
-[![License: GPL v3+](https://img.shields.io/badge/License-GPLv3+-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![pip](https://img.shields.io/badge/pip-0.1.0-blue.svg)](https://pypi.org/project/voxkit/)
+[![CI](https://github.com/jcubic/voxkit/actions/workflows/ci.yml/badge.svg)](https://github.com/jcubic/voxkit/actions/workflows/ci.yml)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/voxkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/voxkit)
+[![voxkit GitHub repo](https://img.shields.io/badge/github-voxkit-orange?logo=github)](https://github.com/jcubic/voxkit)
+[![Coverage Status](https://coveralls.io/repos/github/jcubic/voxkit/badge.svg?branch=master)](https://coveralls.io/github/jcubic/voxkit?branch=master)
+[![LICENSE GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/jcubic/voxkit/blob/master/LICENSE)
 
 A Python library for managing [Piper](https://github.com/rhasspy/piper) TTS voice models. Browse, install, and use offline AI voices with a clean API and an interactive terminal UI.
 
