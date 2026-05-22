@@ -4,6 +4,7 @@ import json
 import os
 import tempfile
 import time
+from unittest.mock import patch
 
 import pytest
 
@@ -83,6 +84,48 @@ class TestListLanguages:
         assert catalog_with_cache.get_language_name("xx") == "xx"
 
 
+class TestCacheFetchFailure:
+    @patch("voxkit.catalog.urllib.request.urlopen", side_effect=Exception("network error"))
+    def test_no_cache_raises(self, mock_urlopen, dirs):
+        cache_dir, voices_dir = dirs
+        catalog = VoiceCatalog(cache_dir, voices_dir)
+        with pytest.raises(Exception, match="network error"):
+            catalog.get()
+
+    @patch("voxkit.catalog.urllib.request.urlopen", side_effect=Exception("network error"))
+    def test_expired_cache_falls_back(self, mock_urlopen, dirs):
+        cache_dir, voices_dir = dirs
+        cache_file = os.path.join(cache_dir, "voices.json")
+        with open(cache_file, "w") as f:
+            json.dump(SAMPLE_CATALOG, f)
+        old_time = time.time() - 90000
+        os.utime(cache_file, (old_time, old_time))
+        catalog = VoiceCatalog(cache_dir, voices_dir, cache_ttl=86400)
+        data = catalog.get()
+        assert "en_US-lessac-medium" in data
+
+    def test_memory_cache_hit(self, catalog_with_cache):
+        catalog_with_cache.get()
+        catalog_with_cache.get()
+        assert catalog_with_cache._catalog is not None
+
+    def test_base_url_property(self, dirs):
+        cache_dir, voices_dir = dirs
+        catalog = VoiceCatalog(cache_dir, voices_dir, base_url="https://example.com")
+        assert catalog.base_url == "https://example.com"
+
+    def test_custom_urls(self, dirs):
+        cache_dir, voices_dir = dirs
+        catalog = VoiceCatalog(
+            cache_dir,
+            voices_dir,
+            catalog_url="https://example.com/voices.json",
+            base_url="https://example.com/base",
+        )
+        assert catalog.base_url == "https://example.com/base"
+        assert catalog._catalog_url == "https://example.com/voices.json"
+
+
 class TestListVoices:
     def test_installed_detection(self, dirs):
         cache_dir, voices_dir = dirs
@@ -94,3 +137,27 @@ class TestListVoices:
         catalog = VoiceCatalog(cache_dir, voices_dir)
         voices = catalog.list_voices("en")
         assert voices[0]["installed"] is True
+
+    def test_voice_fields(self, catalog_with_cache):
+        voices = catalog_with_cache.list_voices("en")
+        v = voices[0]
+        assert "key" in v
+        assert "name" in v
+        assert "language" in v
+        assert "quality" in v
+        assert "region" in v
+        assert "speakers" in v
+        assert "size_mb" in v
+        assert "installed" in v
+
+    def test_sorted_by_key(self, catalog_with_cache):
+        voices = catalog_with_cache.list_voices("en")
+        keys = [v["key"] for v in voices]
+        assert keys == sorted(keys)
+
+    def test_no_voices_for_language(self, catalog_with_cache):
+        voices = catalog_with_cache.list_voices("xx")
+        assert voices == []
+
+    def test_language_name_with_full_locale(self, catalog_with_cache):
+        assert catalog_with_cache.get_language_name("en_US") == "English"
