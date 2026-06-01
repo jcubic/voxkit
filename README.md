@@ -1,6 +1,6 @@
 # VoxKit
 
-[![pip](https://img.shields.io/badge/pip-0.1.0-blue.svg)](https://pypi.org/project/voxkit/)
+[![pip](https://img.shields.io/badge/pip-0.1.1-blue.svg)](https://pypi.org/project/voxkit/)
 [![CI](https://github.com/jcubic/voxkit/actions/workflows/ci.yml/badge.svg)](https://github.com/jcubic/voxkit/actions/workflows/ci.yml)
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/voxkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/voxkit)
 [![voxkit GitHub repo](https://img.shields.io/badge/github-voxkit-orange?logo=github)](https://github.com/jcubic/voxkit)
